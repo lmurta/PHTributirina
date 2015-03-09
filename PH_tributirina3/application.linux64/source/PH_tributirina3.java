@@ -1,7 +1,28 @@
-import grafica.*;
-import java.util.Random;
-import controlP5.*;
-import processing.serial.*;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import grafica.*; 
+import java.util.Random; 
+import controlP5.*; 
+import processing.serial.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class PH_tributirina3 extends PApplet {
+
+
+
+
+
 
 boolean DEBUG = false;
 Serial myPort; // porta serial
@@ -13,7 +34,7 @@ boolean outputInitialized = false;
 boolean logScale;
 
 PFont fontLight, fontBold, fontBig, fontCp5;
-color colorDark, colorGray;
+int colorDark, colorGray;
 int dia;
 int mes;
 int ano;
@@ -33,8 +54,8 @@ int sliderXLim = 180;
 GPlot[] plot = new GPlot[1];
 GPlot plot2;
 int lastY =0;
-color plotColor[] = new color[8];
-color baseColor[] = new color[6];
+int plotColor[] = new int[8];
+int baseColor[] = new int[6];
 
 int analogRead[] = new int[6];
 public Random r;
@@ -42,7 +63,7 @@ int numPoints = 0;
 int px, py, pw, ph, pd, p5x, p5y;
 int samples_y ;
 
-float pHfactor =1.02;
+float pHfactor =1.02f;
 float quickanddirty = 0;
 float average=0;
 float sum = 0;
@@ -66,14 +87,14 @@ int maxMl = 60*6;
 
 //float random_ph;
 
-float enzimas =0.0;
-float find_pH =10.0;
+float enzimas =0.0f;
+float find_pH =10.0f;
 float molaridade_Naoh =25;
 float fator_diluicao =2;
 
 float[][] regression = new float[9][6];
-/* Valores de inclinação da EC para água tamponada 1:100 e 200ml e some metade inicial
- do gráfico
+/* Valores de inclina\u00e7\u00e3o da EC para \u00e1gua tamponada 1:100 e 200ml e some metade inicial
+ do gr\u00e1fico
  1:1 = -0.0060
  1:2 = -0.0020
  1:4 = -0.0010
@@ -93,7 +114,7 @@ float[][] regression = new float[9][6];
  1:8 = -0.002
  
  */
-float regression_11 = -0.0130;
+float regression_11 = -0.0130f;
 int reg_min =10, reg_max=100;
 GPointsArray points_C = new GPointsArray();
 public void setup() {
@@ -135,8 +156,8 @@ public void setup() {
   fontBig = loadFont("OpenSans-CondensedBold-48.vlw");
   fontCp5 = loadFont("OpenSans-CondensedBold-12.vlw");
 
-  colorDark= color(#000000);
-  colorGray= color(#CCCCCC);
+  colorDark= color(0xff000000);
+  colorGray= color(0xffCCCCCC);
 
   if (!DEBUG) {
     //myPort = new Serial(this, "/dev/ttyACM0", 115200);
@@ -147,14 +168,14 @@ public void setup() {
     myString = myPort.readStringUntil(lf);
     myString = null;
   }
-  plotColor[0] =  color(#B276B2);// (purple)
-  plotColor[1] =  color(#5DA5DA);//  (blue)
-  plotColor[2] =  color(#FAA43A);//  (orange)
-  plotColor[3] =  color(#60BD68);//  (green)
-  plotColor[4] =  color(#F17CB0);//  (pink)
-  plotColor[5] =  color(#B2912F);//  (brown)
-  plotColor[6] =  color(#DECF3F);//  (brown)
-  plotColor[7] =  color(#F15854);//  (brown)
+  plotColor[0] =  color(0xffB276B2);// (purple)
+  plotColor[1] =  color(0xff5DA5DA);//  (blue)
+  plotColor[2] =  color(0xffFAA43A);//  (orange)
+  plotColor[3] =  color(0xff60BD68);//  (green)
+  plotColor[4] =  color(0xffF17CB0);//  (pink)
+  plotColor[5] =  color(0xffB2912F);//  (brown)
+  plotColor[6] =  color(0xffDECF3F);//  (brown)
+  plotColor[7] =  color(0xffF15854);//  (brown)
 
   baseColor[0] =  color(100, 100, 100, 100);//  (orange)
   baseColor[1] =  color(100, 100, 100, 100);//  (orange)
@@ -272,13 +293,13 @@ B276B2 (purple)
     plot[i].getYAxis().getAxisLabel().setText("pH");
     //plot[i].activateZooming(1.5);
     plot[i].setFixedXLim(true);
-    plot[i].setXLim(0.0, 300.0);
+    plot[i].setXLim(0.0f, 300.0f);
 
     plot[i].setLineColor(plotColor[i]);
     plot[i].setBoxBgColor(color(240));
-    plot[i].setLineWidth(1.0);
-    plot[i].setYLim(0.0, 1024.0);
-    plot[i].setMar(5.0, 60.0, 5.0, 5.0);
+    plot[i].setLineWidth(1.0f);
+    plot[i].setYLim(0.0f, 1024.0f);
+    plot[i].setMar(5.0f, 60.0f, 5.0f, 5.0f);
     plot[i].getYAxis().setRotateTickLabels(false);
     plot[i].activatePointLabels();
     py = py +ph + pd;
@@ -302,13 +323,13 @@ B276B2 (purple)
   //plot[i].activateZooming(1.5);
   plot2.setFixedXLim(true);
   plot2.setFixedYLim(false);
-  plot2.setXLim(0.0, maxMl);
+  plot2.setXLim(0.0f, maxMl);
 
   plot2.setLineColor(plotColor[2]);
   plot2.setBoxBgColor(color(240));
-  plot2.setLineWidth(4.0);
-  plot2.setYLim(3.0, 10.0);
-  plot2.setMar(5.0, 60.0, 5.0, 5.0);
+  plot2.setLineWidth(4.0f);
+  plot2.setYLim(3.0f, 10.0f);
+  plot2.setMar(5.0f, 60.0f, 5.0f, 5.0f);
   plot2.getYAxis().setRotateTickLabels(false);
   plot2.getXAxis().setNTicks(10); 
 
@@ -319,42 +340,42 @@ B276B2 (purple)
     String name = "sample_" + i;
     plot2.addLayer(name, points_C);
     plot2.getLayer(name).setLineColor(plotColor[i-1]);
-    plot2.getLayer(name).setLineWidth(1.0);
+    plot2.getLayer(name).setLineWidth(1.0f);
     // plot2.getLayer(name).drawLegend(name,100.0,100.0);
   }
   plot2.addLayer("Base 1", points_base_1); 
   plot2.getLayer("Base 1").setLineColor(baseColor[0]); 
-  plot2.getLayer("Base 1").setLineWidth(1.0); 
+  plot2.getLayer("Base 1").setLineWidth(1.0f); 
 
   plot2.addLayer("Base 2", points_base_2); 
   plot2.getLayer("Base 2").setLineColor(baseColor[1]); 
-  plot2.getLayer("Base 2").setLineWidth(1.0); 
+  plot2.getLayer("Base 2").setLineWidth(1.0f); 
 
   plot2.addLayer("Base 4", points_base_4); 
   plot2.getLayer("Base 4").setLineColor(baseColor[2]); 
-  plot2.getLayer("Base 4").setLineWidth(1.0); 
+  plot2.getLayer("Base 4").setLineWidth(1.0f); 
 
   plot2.addLayer("Base 8", points_base_8); 
   plot2.getLayer("Base 8").setLineColor(baseColor[3]); 
-  plot2.getLayer("Base 8").setLineWidth(1.0); 
+  plot2.getLayer("Base 8").setLineWidth(1.0f); 
 
   plot2.addLayer("Base 21", points_base_21); 
   plot2.getLayer("Base 21").setLineColor(baseColor[4]); 
-  plot2.getLayer("Base 21").setLineWidth(1.0); 
+  plot2.getLayer("Base 21").setLineWidth(1.0f); 
 
 
   plot2.addLayer("Base CM", points_CM);
-  plot2.getLayer("Base CM").setLineWidth(2.0);
+  plot2.getLayer("Base CM").setLineWidth(2.0f);
   plot2.getLayer("Base CM").setLineColor(plotColor[3]);
 
   plot2.addLayer("Base TM", points_TM);
-  plot2.getLayer("Base TM").setLineWidth(2.0);
+  plot2.getLayer("Base TM").setLineWidth(2.0f);
   plot2.getLayer("Base TM").setLineColor(plotColor[4]);
 
   py = py +ph + pd;
 
   //pH on 0
-  plot[0].setYLim(0.0, 14.0);
+  plot[0].setYLim(0.0f, 14.0f);
   py = py + 20;
 }
 
@@ -415,8 +436,8 @@ public void draw() {
   //pHmeter on pin0
   // float phValue=(float)avgValue*5.0/1024/6; //convert the analog into millivolt
   // phValue=3.5*phValue;  //convert the millivolt into pH value
-  float phValue=(float)analogRead[0] * 5.0 / 1024;
-  phValue=3.5*phValue;
+  float phValue=(float)analogRead[0] * 5.0f / 1024;
+  phValue=3.5f*phValue;
   phValue = phValue * pHfactor;
 
 
@@ -466,11 +487,11 @@ public void draw() {
 
   text("U/ml:", width - 285 -40, samples_y -20);
   for (int i=0; i < list_Samples.length; i++) {
-    text(int(regression[i][4]), width - 290 +(40 *i), samples_y -20);
+    text(PApplet.parseInt(regression[i][4]), width - 290 +(40 *i), samples_y -20);
   }
   text(" %EC:", width - 285 -40, samples_y -5);
   for (int i=0; i < list_Samples.length; i++) {
-    text(int(regression[i][5]), width - 290 +(40 *i), samples_y -5);
+    text(PApplet.parseInt(regression[i][5]), width - 290 +(40 *i), samples_y -5);
   }
 
   textFont(fontBold);
@@ -499,10 +520,10 @@ public void draw() {
     plot[i].endDraw();
   }
 
-  GPoint reg1 = new GPoint(reg_min, 0.0);
-  GPoint reg2 = new GPoint(reg_min, 14.0);
-  GPoint reg3 = new GPoint(reg_max, 0.0);
-  GPoint reg4 = new GPoint(reg_max, 14.0);
+  GPoint reg1 = new GPoint(reg_min, 0.0f);
+  GPoint reg2 = new GPoint(reg_min, 14.0f);
+  GPoint reg3 = new GPoint(reg_max, 0.0f);
+  GPoint reg4 = new GPoint(reg_max, 14.0f);
 
 
   plot2.beginDraw();
@@ -515,8 +536,8 @@ public void draw() {
   plot2.drawLines();
   plot2.drawLabels();
   //plot2.drawFilledContours(GPlot.HORIZONTAL, 0);
-  plot2.drawLine(reg1, reg2, color(00,99,00), 1.0);
-  plot2.drawLine(reg3, reg4, color(00,99,99), 1.0);
+  plot2.drawLine(reg1, reg2, color(00,99,00), 1.0f);
+  plot2.drawLine(reg3, reg4, color(00,99,99), 1.0f);
   plot2.endDraw();
 
   GPoint lastPoint = plot[0].getPointsRef().getLastPoint();
@@ -571,7 +592,7 @@ public void draw() {
   textFont(fontLight);
 }
 
-void serialEvent(Serial myPort) {
+public void serialEvent(Serial myPort) {
 
   serialEvent = true;
   myString = null;
@@ -587,14 +608,14 @@ void serialEvent(Serial myPort) {
       for (int i=0; i<6; i++) {
         //println(i +" "+vals[i]);
         String strAnalog[] =split(vals[i], ":");
-        analogRead[i] =  int(strAnalog[1]);
+        analogRead[i] =  PApplet.parseInt(strAnalog[1]);
       }
       numPoints++;
     }
   }
 }
 
-void keyPressed() {
+public void keyPressed() {
   //println("a key event. key:"+ key +" keyCode:"+ keyCode);
   if (key == CODED) {
     if (keyCode == RETURN) {
@@ -636,7 +657,7 @@ void keyPressed() {
     
     plot2.addLayer(name, points_C);
     plot2.getLayer(name).setLineColor(plotColor[currentSample-1]);
-    plot2.getLayer(name).setLineWidth(1.0);
+    plot2.getLayer(name).setLineWidth(1.0f);
 
 }
   if (key=='l') { 
@@ -652,7 +673,7 @@ void keyPressed() {
     }
   }
 }
-void AddNewValue(float val)
+public void AddNewValue(float val)
 {
   if (count < storedValues.length) {
     //array is not full yet
@@ -714,4 +735,13 @@ public void saveFile(int theValue) {
   }
   foutput.flush();  // Writes the remaining data to the file
   foutput.close();
+}
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "PH_tributirina3" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
