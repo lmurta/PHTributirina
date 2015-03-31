@@ -94,7 +94,8 @@ float[][] regression = new float[9][6];
  
  */
 float regression_11 = -0.0130;
-int reg_min =10, reg_max=100;
+int reg_min =60;
+int reg_max= reg_min +100;
 GPointsArray points_C = new GPointsArray();
 public void setup() {
   size(900, 650);
@@ -325,7 +326,8 @@ B276B2 (purple)
   plot2.addLayer("Base 1", points_base_1); 
   plot2.getLayer("Base 1").setLineColor(baseColor[0]); 
   plot2.getLayer("Base 1").setLineWidth(1.0); 
-
+  plot2.drawAnnotation("1100",10.0,10.0,RIGHT,TOP);
+  
   plot2.addLayer("Base 2", points_base_2); 
   plot2.getLayer("Base 2").setLineColor(baseColor[1]); 
   plot2.getLayer("Base 2").setLineWidth(1.0); 
