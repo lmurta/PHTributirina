@@ -297,8 +297,8 @@ B276B2 (purple)
     plot[i].setXLim(0.0f, 300.0f);
 
     plot[i].setLineColor(plotColor[i]);
-    plot[i].setBoxBgColor(color(240));
-    plot[i].setLineWidth(1.0f);
+    plot[i].setBoxBgColor(color(250));
+    plot[i].setLineWidth(1.5f);
     plot[i].setYLim(0.0f, 1024.0f);
     plot[i].setMar(5.0f, 60.0f, 5.0f, 5.0f);
     plot[i].getYAxis().setRotateTickLabels(false);
@@ -327,9 +327,9 @@ B276B2 (purple)
   plot2.setXLim(0.0f, maxMl);
 
   plot2.setLineColor(plotColor[2]);
-  plot2.setBoxBgColor(color(240));
+  plot2.setBoxBgColor(color(250));
   plot2.setLineWidth(4.0f);
-  plot2.setYLim(3.0f, 10.0f);
+  plot2.setYLim(0.0f, 10.0f);
   plot2.setMar(5.0f, 60.0f, 5.0f, 5.0f);
   plot2.getYAxis().setRotateTickLabels(false);
   plot2.getXAxis().setNTicks(10); 
@@ -341,7 +341,7 @@ B276B2 (purple)
     String name = "sample_" + i;
     plot2.addLayer(name, points_C);
     plot2.getLayer(name).setLineColor(plotColor[i-1]);
-    plot2.getLayer(name).setLineWidth(1.0f);
+    plot2.getLayer(name).setLineWidth(1.5f);
     // plot2.getLayer(name).drawLegend(name,100.0,100.0);
   }
   plot2.addLayer("Base 1", points_base_1); 
@@ -601,9 +601,10 @@ public void serialEvent(Serial myPort) {
   myString =myPort.readStringUntil(lf);
   if ((myString != null)) {
     int asterisk = myString.indexOf('*');
-
-    if (asterisk ==36) {
-      //println(myString + asterisk);
+println(myString + asterisk);
+    //if (asterisk ==36) {
+      if (asterisk >0) {
+      println(myString + asterisk);
       String[] vals = split(myString, ",");
       //println("commas="+vals.length);
       //println(vals);
@@ -659,7 +660,7 @@ public void keyPressed() {
     
     plot2.addLayer(name, points_C);
     plot2.getLayer(name).setLineColor(plotColor[currentSample-1]);
-    plot2.getLayer(name).setLineWidth(1.0f);
+    plot2.getLayer(name).setLineWidth(1.5f);
 
 }
   if (key=='l') { 
