@@ -115,7 +115,7 @@ float[][] regression = new float[9][6];
  
  */
 float regression_11 = -0.0130f;
-int reg_min =60;
+int reg_min =40;
 int reg_max= reg_min +100;
 GPointsArray points_C = new GPointsArray();
 public void setup() {
@@ -429,7 +429,9 @@ public void draw() {
   fill(colorDark);
   py+=fontSize;
   py+=fontSize;
-  text(numPoints, width-rx, py);
+  //text(numPoints, width-rx, py);
+  text(totSamples[currentSample-1], width-rx, py);
+  
   fill(colorGray);
   textAlign(LEFT);
   text(":i", width-rx, py);
